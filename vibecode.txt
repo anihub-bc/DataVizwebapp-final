@@ -1,0 +1,3 @@
+testing vibecoding git repo
+opened file in vscode
+ 
