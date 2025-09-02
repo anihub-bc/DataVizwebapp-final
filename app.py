@@ -9,7 +9,7 @@ def local_css(file_name):
 
 # Page configuration
 st.set_page_config(
-    page_title="Data Analytics Dashboard",
+    page_title="DataViz Web-App",
     page_icon="📊",
     layout="wide"
 )
@@ -27,8 +27,10 @@ uploaded_file = st.sidebar.file_uploader(
 )
 
 # --- Main Page --- #
-st.title("📊 Data Analytics Dashboard")
+st.title("📊 DataViz Web-App")
 st.write("Upload your data and start exploring!")
+st.write("DataViz Web-App is a web tool that helps in visualising raw data of the end user and helps in showcasing the data in an understandable manner by means of various charts on the required parameters set by the user.A great UX is what separates a useful dashboard from a confusing one. " \
+"The primary goal is to present complex information with clarity and simplicity. ")
 
 if uploaded_file is not None:
     try:
@@ -79,6 +81,7 @@ if uploaded_file is not None:
             if hist_col:
                 fig = px.histogram(df, x=hist_col, title=f'Histogram of {hist_col}', template="plotly_dark")
                 st.plotly_chart(fig, use_container_width=True)
+           
 
         elif chart_type == "Pie Chart":
             st.sidebar.write("Select columns for the Pie Chart:")
