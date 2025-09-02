@@ -1,20 +1,81 @@
-
+/* General Styles */
 body {
-    color: #00f0ff;
-    background-color: #000000;
+    font-family: 'Inter', sans-serif;
 }
-.st-b7 {
-    background-color: #0a0a0a;
+
+/* Main content area */
+.main .block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
 }
-.st-ag {
-    border-color: #00f0ff;
+
+/* Sidebar Styles */
+.st-emotion-cache-16txtl3 {
+    background-color: #1a1a1a;
+    border-right: 1px solid #2a2a2a;
 }
-.st-at {
+
+.st-emotion-cache-16txtl3 h1 {
+    color: #fafafa;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.st-emotion-cache-16txtl3 .st-emotion-cache-1v0mbdj {
+    border-top: 1px solid #2a2a2a;
+    padding-top: 1rem;
+}
+
+/* File Uploader */
+.stFileUploader {
+    border: 1px dashed #ff4b4b;
+    border-radius: 0.5rem;
+    padding: 1rem;
     background-color: #1a1a1a;
 }
-.st-emotion-cache-18ni7ap {
-    background-color: #000000;
+
+.stFileUploader label {
+    color: #fafafa;
+    font-weight: 600;
 }
-.st-emotion-cache-1avcm0n {
-    background-color: #000000;
+
+/* Buttons */
+.stButton>button {
+    background-color: #ff4b4b;
+    color: white;
+    border-radius: 0.5rem;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.stButton>button:hover {
+    background-color: #e03a3a;
+}
+
+/* Expander */
+.stExpander {
+    border: 1px solid #2a2a2a;
+    border-radius: 0.5rem;
+    background-color: #1a1a1a;
+}
+
+.stExpander header {
+    font-weight: 600;
+    color: #fafafa;
+}
+
+/* Dataframe */
+.stDataFrame {
+    border: 1px solid #2a2a2a;
+    border-radius: 0.5rem;
+}
+
+/* Charts */
+.stPlotlyChart {
+    border: 1px solid #2a2a2a;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background-color: #1a1a1a;
 }

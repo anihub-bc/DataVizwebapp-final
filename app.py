@@ -2,49 +2,93 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-def main():
-    st.set_page_config(layout="wide")
-
-    with open("style.css") as f:
+# Function to load local CSS
+def local_css(file_name):
+    with open(file_name) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-    st.title("DataViz App ")
-    st.markdown("Visualise your data in simple manner to get an understanding on the key data elements present in your data in no time. Just upload your data file in CSV, XLS, XLSX (Limit 200MB per file) ")
+# Page configuration
+st.set_page_config(
+    page_title="Data Analytics Dashboard",
+    page_icon="📊",
+    layout="wide"
+)
 
-    st.sidebar.header("Upload")
-    uploaded_file = st.sidebar.file_uploader("Upload your XLS or CSV file", type=["csv", "xls", "xlsx"])
+# Apply custom CSS
+local_css("style.css")
 
-    if uploaded_file is not None:
-        try:
-            if uploaded_file.name.endswith('.csv'):
-                df = pd.read_csv(uploaded_file)
-            else:
-                df = pd.read_excel(uploaded_file)
-        except Exception as e:
-            st.error(f"Error reading file: {e}")
-            return
+# --- Sidebar --- #
+st.sidebar.header("Dashboard Controls")
 
-        st.header("Data Summary")
-        st.write(df.head())
+# File uploader
+uploaded_file = st.sidebar.file_uploader(
+    "Upload your CSV or Excel file", 
+    type=['csv', 'xls', 'xlsx']
+)
 
-        st.header("Data Visualisation")
-        st.write(df.info())
+# --- Main Page --- #
+st.title("📊 Data Analytics Dashboard")
+st.write("Upload your data and start exploring!")
 
-        st.sidebar.header("Chart Configuration")
-        chart_type = st.sidebar.selectbox("Select Chart Type", ["Bar", "Line", "Scatter", "Pie"])
-
-        columns = df.columns.tolist()
-
-        if chart_type == "Pie":
-            names_col = st.sidebar.selectbox("Select Column for Labels", columns)
-            values_col = st.sidebar.selectbox("Select Column for Values", columns)
-            fig = px.pie(df, names=names_col, values=values_col, title=f"{chart_type} Chart")
+if uploaded_file is not None:
+    try:
+        # Read the file into a pandas DataFrame
+        if uploaded_file.name.endswith('.csv'):
+            df = pd.read_csv(uploaded_file)
         else:
-            x_axis = st.sidebar.selectbox("Select X-axis", columns)
-            y_axis = st.sidebar.selectbox("Select Y-axis", columns)
-            fig = getattr(px, chart_type.lower())(df, x=x_axis, y=y_axis, title=f"{chart_type} Chart")
+            df = pd.read_excel(uploaded_file)
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.success("File uploaded successfully!")
 
-if __name__ == "__main__":
-    main()
+        # --- Data Preview --- #
+        st.header("Data Preview")
+        st.dataframe(df.head())
+
+
+
+        # --- Charting --- #
+        st.header("Data Visualization")
+
+        # Get column names
+        numeric_columns = df.select_dtypes(include=['number']).columns.tolist()
+        categorical_columns = df.select_dtypes(include=['object', 'category']).columns.tolist()
+
+        # Sidebar controls for charting
+        st.sidebar.subheader("Chart Settings")
+        chart_type = st.sidebar.selectbox("Select Chart Type", ["Bar Chart", "Scatter Plot", "Histogram", "Pie Chart"])
+
+        if chart_type == "Bar Chart":
+            st.sidebar.write("Select columns for the Bar Chart:")
+            x_axis = st.sidebar.selectbox("X-Axis", categorical_columns)
+            y_axis = st.sidebar.selectbox("Y-Axis", categorical_columns)
+            if x_axis and y_axis:
+                fig = px.bar(df, x=x_axis, y=y_axis, title=f'{y_axis} by {x_axis}', template="plotly_dark")
+                st.plotly_chart(fig, use_container_width=True)
+
+        elif chart_type == "Scatter Plot":
+            st.sidebar.write("Select columns for the Scatter Plot:")
+            x_axis = st.sidebar.selectbox("X-Axis",  categorical_columns)
+            y_axis = st.sidebar.selectbox("Y-Axis",  categorical_columns, index=1 if len(categorical_columns) > 1 else 0)
+            if x_axis and y_axis:
+                fig = px.scatter(df, x=x_axis, y=y_axis, title=f'{y_axis} vs {x_axis}', template="plotly_dark")
+                st.plotly_chart(fig, use_container_width=True)
+
+        elif chart_type == "Histogram":
+            st.sidebar.write("Select a column for the Histogram:")
+            hist_col = st.sidebar.selectbox("Column", categorical_columns)
+            if hist_col:
+                fig = px.histogram(df, x=hist_col, title=f'Histogram of {hist_col}', template="plotly_dark")
+                st.plotly_chart(fig, use_container_width=True)
+
+        elif chart_type == "Pie Chart":
+            st.sidebar.write("Select columns for the Pie Chart:")
+            names_col = st.sidebar.selectbox("Labels", categorical_columns)
+            values_col = st.sidebar.selectbox("Values", categorical_columns)
+            if names_col and values_col:
+                fig = px.pie(df, names=names_col, values=values_col, title=f'Distribution of {values_col} by {names_col}', template="plotly_dark")
+                st.plotly_chart(fig, use_container_width=True)
+
+    except Exception as e:
+        st.error(f"Error processing file: {e}")
+else:
+    st.info("Awaiting for a file to be uploaded.") 
